@@ -16,48 +16,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 
 // --- API Client Setup ---
-const BASE_URL = 'https://formbuilder-xbl5.onrender.com';
+import { apiClient } from '../api';
 
-const apiClient = {
-  get: async (url) => {
-    try {
-      const response = await fetch(`${BASE_URL}${url}`);
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(`HTTP error! status: ${response.status} - ${errorData.message || 'Unknown error'}`);
-      }
-      return { data: await response.json() };
-    } catch (error) {
-      console.error("API GET error:", error);
-      throw error;
-    }
-  },
-  post: async (url, data) => {
-    try {
-      const response = await fetch(`${BASE_URL}${url}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ message: response.statusText }));
-        const errorMessage = errorData.errors ? errorData.errors.join('\n') : errorData.message || response.statusText;
-        throw new Error(`HTTP error! status: ${response.status} - ${errorMessage}`);
-      }
-      return { data: await response.json() };
-    } catch (error) {
-      console.error("API POST error:", error);
-      throw error;
-    }
-  },
-};
-
-const uploadImageToBackend = async (file, uploadUrl) => {
-  console.log(`Uploading image to: ${uploadUrl}`, file);
-  return `https://placehold.co/150x100/A7DBD8/116466?text=Uploaded+Image`;
-};
 
 
 // --- DraggableItem Component ---
