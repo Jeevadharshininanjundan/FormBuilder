@@ -5,7 +5,7 @@ import QuestionEditor from '../components/QuestionEditor'; // Corrected import p
 
 // Dummy apiClient and uploadImageToBackend to avoid import issues if not explicitly defined elsewhere.
 // In a full application, these would be in a separate file (e.g., '../api').
-const BASE_URL = 'https://formbuilder-xbl5.onrender.com/'; // Ensure this matches your backend server's port
+const BASE_URL = 'https://formbuilder-xbl5.onrender.com'; // Ensure this matches your backend server's port
 
 const apiClient = {
   get: async (url) => {
