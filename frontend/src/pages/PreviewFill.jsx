@@ -408,6 +408,9 @@ export default function PreviewFill() {
   return (
     <div className="max-w-4xl mx-auto bg-[#D4F1F4] min-h-screen pt-[100px] p-8 font-inter">
       {/* Display header and submission messages regardless of whether the form is shown */}
+      <h1 className="text-4xl font-extrabold text-[#116466] text-center mb-8">
+        {form.title}
+      </h1>
       {form.headerImage && (
         <img
           src={form.headerImage}
@@ -415,9 +418,7 @@ export default function PreviewFill() {
           className="mb-6 w-full h-auto object-cover rounded-lg shadow-md border border-[#116466]/30"
         />
       )}
-      <h1 className="text-4xl font-extrabold text-[#116466] text-center mb-8">
-        {form.title}
-      </h1>
+      
       
       {submissionMessage.type === 'success' && (
         <div className="p-4 mb-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
