@@ -89,7 +89,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
+/*
 // Upload header image or question image (field: "image") -> returns imageUrl
 router.post('/upload-image', upload.single('image'), async (req, res) => {
     try {
@@ -99,7 +99,7 @@ router.post('/upload-image', upload.single('image'), async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
-});
+}); */
 
 // Get a form by id
 router.get('/:id', async (req, res) => {

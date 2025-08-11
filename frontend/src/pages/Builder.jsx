@@ -1,6 +1,6 @@
 // src/pages/Builder.jsx
 import React, { useState } from 'react';
-import { apiClient, uploadImageToBackend } from '../api';
+import { apiClient, uploadImageToBackend } from '../api'; // Use the corrected api.js
 import QuestionEditor from '../components/QuestionEditor';
 
 const QUESTION_TYPES = [
@@ -20,7 +20,6 @@ export default function Builder() {
 
     const [questionUploadStatuses, setQuestionUploadStatuses] = useState({});
 
-    // New function to reset the entire form state
     const resetForm = () => {
         setTitle('');
         setHeaderImage(null);
@@ -38,7 +37,8 @@ export default function Builder() {
         setHeaderImage(previewUrl);
 
         try {
-            const uploadedUrl = await uploadImageToBackend(file, '/api/upload-image');
+            // Call the specific header upload endpoint
+            const uploadedUrl = await uploadImageToBackend(file, '/api/upload/header');
             setHeaderImage(uploadedUrl);
             setHeaderUploadStatus('success');
         } catch (err) {
@@ -61,7 +61,8 @@ export default function Builder() {
         setQuestions(newQuestions);
 
         try {
-            const uploadedUrl = await uploadImageToBackend(file, '/api/upload-image');
+            // Call the specific question upload endpoint
+            const uploadedUrl = await uploadImageToBackend(file, '/api/upload/question');
             const updatedQuestions = [...questions];
             updatedQuestions[qIdx].imageUrl = uploadedUrl;
             setQuestions(updatedQuestions);
@@ -111,7 +112,6 @@ export default function Builder() {
     }
 
     async function saveForm() {
-        // ... (rest of the saveForm function remains the same)
         if (!title.trim()) {
             alert('Please enter a form title.');
             return;
@@ -156,7 +156,6 @@ export default function Builder() {
 
     return (
         <div className="max-w-full min-h-screen bg-[#D4F1F4] pt-[100px] p-8 flex mx-auto gap-8">
-            {/* ... (rest of the component) ... */}
             <div className="w-60 bg-[#FFE8D6] rounded-xl p-4 flex flex-col gap-4 overflow-auto max-h-[calc(100vh-120px)] border border-[#FF6F91]/50 shadow-lg">
                 {questions.length === 0 && (
                     <p className="text-[#116466]/70 text-lg font-light italic px-4">
@@ -214,7 +213,7 @@ export default function Builder() {
                     + Add Question
                 </button>
             </div>
-            {/* ... (rest of the component) ... */}
+
             <div className="flex-1 flex flex-col gap-6">
                 <h1 className="text-[#116466] font-bold text-3xl">Create a Form</h1>
                 <div>
@@ -298,34 +297,37 @@ export default function Builder() {
                         />
                     </div>
                 )}
+                
                 {submissionStatus === 'success' && (
                     <div className="mt-8 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg shadow-md text-center">
                         <p className="font-semibold text-lg">✅ Form created successfully!</p>
                         <p className="mt-2 text-md">
                             You can view and share your form here:
                         </p>
-                        <a
-                            href={formLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <a 
+                            href={formLink} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
                             className="block mt-2 text-blue-600 hover:underline font-mono break-all"
                         >
                             {formLink}
                         </a>
                         <button
-                            onClick={resetForm} // Call the new reset function
+                            onClick={resetForm} 
                             className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
                         >
                             Create Another
                         </button>
                     </div>
                 )}
+
                 {submissionStatus === 'error' && (
                     <div className="mt-8 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-md text-center">
                         <p className="font-semibold text-lg">❌ Failed to save form.</p>
                         <p className="mt-2">Please check the console for more details and try again.</p>
                     </div>
                 )}
+
                 <div className="mt-10 flex justify-center">
                     <button
                         onClick={saveForm}
@@ -335,7 +337,7 @@ export default function Builder() {
                     </button>
                 </div>
             </div>
-            {/* ... (rest of the component) ... */}
+
             <aside className="w-72 bg-[#FFE8D6] rounded-xl p-6 flex flex-col gap-6 shadow-lg border border-[#FF6F91]/50">
                 <h2 className="text-[#FF6F91] font-extrabold text-xl tracking-wide uppercase">Question Type</h2>
                 {QUESTION_TYPES.map(({ type, title, description }) => (
