@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useUser } from '../context/AuthContext.jsx';
+
 
 const Navbar = () => {
   const { user } = useUser();
