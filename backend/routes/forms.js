@@ -36,8 +36,7 @@ const validateFormData = (form) => {
 
         // Validate Cloze questions (UPDATED LOGIC with more robust regex)
         else if (question.type === 'cloze') {
-            // New regex: looks for <u> tags that have the data-original-text attribute,
-            // and allows any content (or no content) between the <u> and </u> tags.
+            
             const blankRegex = /<u[^>]*data-original-text="[^"]*"[^>]*>.*?<\/u>/g;
             const foundBlanks = (question.clozeText.match(blankRegex) || []);
 
@@ -89,19 +88,7 @@ router.post('/', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-/*
-// Upload header image or question image (field: "image") -> returns imageUrl
-router.post('/upload-image', upload.single('image'), async (req, res) => {
-    try {
-        if (!req.file) return res.status(400).json({ error: 'No file provided' });
-        const result = await streamUpload(req.file.buffer);
-        res.json({ url: result.secure_url });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-}); */
 
-// Get a form by id
 router.get('/:id', async (req, res) => {
     try {
         const form = await Form.findById(req.params.id);

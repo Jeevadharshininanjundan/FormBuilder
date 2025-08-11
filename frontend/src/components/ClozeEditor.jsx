@@ -62,16 +62,15 @@ export default function ClozeEditor({ question, onChange }) {
   const [currentHtml, setCurrentHtml] = useState(question.clozeText || '');
   const [options, setOptions] = useState([]); // Manage options extracted from HTML
 
-  // Helper function to extract underlined options from HTML content
+  
   const extractOptionsFromHtml = (content) => {
     const div = document.createElement('div');
     div.innerHTML = content;
     const uElements = Array.from(div.querySelectorAll('u'));
 
-    // Filter out empty underlines and map to option objects
+
     const newOptions = uElements.map((el, i) => {
-      // Use a custom data attribute to store the original text of the blank
-      // This is crucial because the editor will display it as an empty blank
+      
       const originalText = el.getAttribute('data-original-text') || el.textContent.trim();
       return {
         id: `opt-${i}`, // Ensure unique ID for Dnd-kit
@@ -82,42 +81,36 @@ export default function ClozeEditor({ question, onChange }) {
     return newOptions;
   };
 
-  // --- useEffect to sync external changes and initial load ---
   useEffect(() => {
-    // Only update the DOM if the prop `question.clozeText` actually differs
-    // from what's currently in the contentEditable div. This prevents unnecessary
-    // DOM manipulations that could disrupt typing.
+    
     if (editorRef.current && editorRef.current.innerHTML !== question.clozeText) {
       editorRef.current.innerHTML = question.clozeText || '';
     }
-    setCurrentHtml(question.clozeText || ''); // Update React state
-    setOptions(extractOptionsFromHtml(question.clozeText || '')); // Extract options from initial/updated text
-  }, [question.clozeText]); // Dependency on question.clozeText ensures it runs when parent changes
+    setCurrentHtml(question.clozeText || ''); 
+    setOptions(extractOptionsFromHtml(question.clozeText || '')); 
+  }, [question.clozeText]); 
 
-  // Dnd Kit sensors for drag and drop
+ 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
-  // --- Function to sync contentEditable DOM with React state and parent ---
-  // This function is called when the content changes, or on blur, or after execCommand
+
   const syncContentToState = () => {
     if (!editorRef.current) return;
-    const content = editorRef.current.innerHTML; // Read current content directly from DOM
-    setCurrentHtml(content); // Update React state with DOM's latest HTML
-
+    const content = editorRef.current.innerHTML; 
+    setCurrentHtml(content); 
     const newOptions = extractOptionsFromHtml(content);
-    setOptions(newOptions); // Update extracted options state
+    setOptions(newOptions); 
 
-    // Propagate changes up to the parent component
     onChange({
       ...question,
       clozeText: content,
-      options: newOptions.map((o) => o.text), // Send only the text of options to parent
+      options: newOptions.map((o) => o.text), 
     });
   };
 
-  // Manually creates an underlined blank and replaces the selected text
+
   function toggleUnderline() {
     if (!editorRef.current) return;
 
@@ -132,21 +125,19 @@ export default function ClozeEditor({ question, onChange }) {
       return;
     }
 
-    // Create a new <u> element
+   
     const uElement = document.createElement('u');
-    // Store the original selected text as a data attribute
+    
     uElement.setAttribute('data-original-text', selectedText);
-    // Replace the content of the <u> tag with non-breaking spaces for a visual blank
-    uElement.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; // A few spaces to make it visible
+    
+    uElement.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'; 
 
-    // Replace the selected content with our new <u> element
+   
     range.deleteContents();
     range.insertNode(uElement);
-
-    // After modifying the DOM, sync the state
     syncContentToState();
 
-    // Re-focus the editor and restore cursor position after the inserted blank
+    
     const newRange = document.createRange();
     const newSelection = window.getSelection();
     newRange.setStartAfter(uElement);
@@ -156,21 +147,19 @@ export default function ClozeEditor({ question, onChange }) {
     editorRef.current.focus();
   }
 
-  // Handles the end of a drag operation for reordering options
+  
   function handleDragEnd(event) {
     const { active, over } = event;
-    // If an item was dragged but not dropped over a valid target, or if dropped on itself, do nothing
+    
     if (!over || active.id === over.id) return;
 
     const oldIndex = options.findIndex((o) => o.id === active.id);
     const newIndex = options.findIndex((o) => o.id === over.id);
 
-    // Reorder the options array using arrayMove from dnd-kit/sortable
     const newOpts = arrayMove(options, oldIndex, newIndex);
 
     setOptions(newOpts); // Update local options state
 
-    // Propagate reordered options to the parent
     onChange({
       ...question,
       clozeText: currentHtml, // Use currentHtml from state, as the DOM content wasn't directly changed by drag
@@ -178,7 +167,6 @@ export default function ClozeEditor({ question, onChange }) {
     });
   }
 
-  // Generate the preview HTML for display
   const getPreviewHtml = () => {
     if (!currentHtml) return 'No content yet. Type something and underline to create blanks.';
 
@@ -190,9 +178,9 @@ export default function ClozeEditor({ question, onChange }) {
 
     // Replace the content of each <u> with a visual blank placeholder
     uElements.forEach(u => {
-      u.innerHTML = '_____'; // A simple placeholder for the blank
-      u.style.textDecoration = 'none'; // Remove underline for a cleaner blank look
-      u.style.borderBottom = '1px solid #116466'; // Add a border bottom for blank look
+      u.innerHTML = '_____'; 
+      u.style.textDecoration = 'none'; 
+      u.style.borderBottom = '1px solid #116466'; 
       u.style.padding = '0 5px';
       u.style.display = 'inline-block';
       u.style.minWidth = '50px';
@@ -226,7 +214,7 @@ export default function ClozeEditor({ question, onChange }) {
         spellCheck={false} // Disable browser spell check
         aria-multiline="true" // Accessibility attribute
         role="textbox" // Accessibility role
-        // Explicit styles for cursor and text direction/alignment
+        
         style={{ cursor: 'text', direction: 'ltr', unicodeBidi: 'plaintext', textAlign: 'left' }}
       />
 
