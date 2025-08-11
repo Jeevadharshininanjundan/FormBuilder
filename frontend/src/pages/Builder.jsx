@@ -111,48 +111,60 @@ export default function Builder() {
         else if (selectedIndex > idx) setSelectedIndex((i) => i - 1);
     }
 
-    async function saveForm() {
-        if (!title.trim()) {
-            alert('Please enter a form title.');
-            return;
-        }
-        if (questions.length === 0) {
-            alert('Please add at least one question.');
-            return;
-        }
-
-        const sanitizedQuestions = questions.map(q => {
-            const sanitizedQ = {
-                type: q.type,
-                questionText: q.questionText || '',
-                imageUrl: q.imageUrl || '',
-            };
-            if (q.type === 'categorize') {
-                sanitizedQ.categories = q.categories;
-                sanitizedQ.options = q.options;
-                sanitizedQ.optionCategoryMap = q.optionCategoryMap;
-            } else if (q.type === 'cloze') {
-                sanitizedQ.clozeText = q.clozeText;
-                sanitizedQ.options = q.options;
-            } else if (q.type === 'comprehension') {
-                sanitizedQ.passage = q.passage;
-                sanitizedQ.passageQuestions = q.passageQuestions;
-            }
-            return sanitizedQ;
-        });
-
-        const payload = { title, headerImage, questions: sanitizedQuestions };
-        
-        try {
-            const res = await apiClient.post('/api/forms', payload);
-            setSubmissionStatus('success');
-            setFormLink(`${window.location.origin}/forms/${res.data._id}`);
-        } catch (err) {
-            console.error(err);
-            setSubmissionStatus('error');
-            setFormLink('');
-        }
+    
+async function saveForm() {
+    if (!title.trim()) {
+        alert('Please enter a form title.');
+        return;
     }
+    if (questions.length === 0) {
+        alert('Please add at least one question.');
+        return;
+    }
+
+    const sanitizedQuestions = questions.map(q => {
+        const sanitizedQ = {
+            type: q.type,
+            questionText: q.questionText || '',
+            imageUrl: q.imageUrl || '',
+        };
+        if (q.type === 'categorize') {
+            sanitizedQ.categories = q.categories;
+            sanitizedQ.options = q.options;
+            sanitizedQ.optionCategoryMap = q.optionCategoryMap;
+        } else if (q.type === 'cloze') {
+            sanitizedQ.clozeText = q.clozeText;
+            sanitizedQ.options = q.options;
+        } else if (q.type === 'comprehension') {
+            sanitizedQ.passage = q.passage;
+            sanitizedQ.passageQuestions = q.passageQuestions;
+        }
+        return sanitizedQ;
+    });
+
+    const payload = { title, headerImage, questions: sanitizedQuestions };
+    
+    try {
+        const res = await apiClient.post('/api/forms', payload);
+        setSubmissionStatus('success');
+        setFormLink(`${window.location.origin}/forms/${res.data._id}`);
+    } catch (err) {
+        console.error(err);
+        setSubmissionStatus('error');
+        setFormLink('');
+        
+        // --- CORRECTED SECTION BELOW ---
+        if (err.response && err.response.data && err.response.data.errors) {
+            // Join all validation errors from the backend into a single string
+            const errorMessages = err.response.data.errors.join('\n');
+            alert(`Please correct the following errors:\n\n${errorMessages}`);
+        } else {
+            // Fallback for unexpected errors
+            alert('An unexpected error occurred. Please check the console for details.');
+        }
+        // --- END OF CORRECTED SECTION ---
+    }
+}
 
     return (
         <div className="max-w-full min-h-screen bg-[#D4F1F4] pt-[100px] p-8 flex mx-auto gap-8">
