@@ -150,7 +150,7 @@ async function saveForm() {
         setFormLink(`${window.location.origin}/forms/${res.data._id}`);
     } catch (err) {
         console.error(err);
-        setSubmissionStatus('error');
+        //setSubmissionStatus('error');
         setFormLink('');
         
         // --- CORRECTED SECTION BELOW ---
