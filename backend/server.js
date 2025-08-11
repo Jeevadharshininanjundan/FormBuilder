@@ -9,7 +9,11 @@ const responseRoutes = require('./routes/responses');
 
 const uploadRoutes = require('./routes/uploadRoutes');
 const app = express();
-app.use(cors());
+app.use(cors(
+  {
+    origin: 'https://form-builder-eight-alpha.vercel.app',
+  }
+));
 app.use(express.json({ limit: '10mb' }));
 
 // Static if you want to serve local uploads during dev
