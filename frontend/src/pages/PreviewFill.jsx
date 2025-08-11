@@ -452,7 +452,7 @@ export default function PreviewFill() {
         <img
           src={form.headerImage}
           alt="Form Header"
-          className="mb-6 w-full max-h-48 object-cover rounded-lg shadow-md border border-[#116466]/30"
+          className="mb-6 w-full h-auto object-cover rounded-lg shadow-md border border-[#116466]/30"
         />
       )}
       <h1 className="text-4xl font-extrabold text-[#116466] text-center mb-8">
@@ -495,7 +495,7 @@ export default function PreviewFill() {
 
                     {q.questionText && <p className="mt-2 text-lg text-[#333]">{q.questionText}</p>}
                     {q.imageUrl && (
-                      <img src={q.imageUrl} className="h-40 w-full mt-4 rounded-lg object-contain shadow-sm border border-[#FFE8D6]" alt="Question visual" />
+                      <img src={q.imageUrl} className="h-auto w-full mt-4 rounded-lg object-contain shadow-sm border border-[#FFE8D6]" alt="Question visual" />
                     )}
 
                     {/* Categorize Question */}
